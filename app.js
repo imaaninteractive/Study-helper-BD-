@@ -1,0 +1,179 @@
+import { auth, provider } from "./firebase.js";
+import { signInWithPopup } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
+
+ /***********************
+  JOSEN AI APP
+************************/
+import { JOSEN_MODELS } from "./josen.js";
+import { MATH_INTENTS } from "./math.js";
+import { SCIENCE_INTENTS } from "./science.js";
+import { ENGLISH_INTENTS } from "./English.js";
+
+// সব intents একত্র করা
+const ALL_INTENTS = [
+  ...(JOSEN_MODELS?.ark_anaya?.intents || []),
+  ...MATH_INTENTS,
+  ...SCIENCE_INTENTS,
+  ...ENGLISH_INTENTS
+];
+/* =========================
+   SPLASH SCREEN
+========================= */
+const splashScreen = document.getElementById("splashScreen");
+const loginScreen = document.getElementById("loginScreen");
+const appScreen = document.getElementById("app");
+
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    splashScreen.classList.add("hidden");
+    loginScreen.classList.remove("hidden");
+  }, 3000);
+});
+
+/* =========================
+   DEMO LOGIN
+========================= */
+const googleLoginBtn = document.getElementById("googleLogin");
+
+googleLoginBtn.addEventListener("click", () => {
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      console.log("ইউজার:", result.user.displayName);
+
+      loginScreen.classList.add("hidden");
+      appScreen.classList.remove("hidden");
+
+      addMessage(
+        `স্বাগতম <b>${result.user.displayName}</b>! আমি আপনাকে কীভাবে সাহায্য করতে পারি?`,
+        "ai"
+      );
+    })
+    .catch((error) => {
+      console.error("লগইন এরর:", error.message);
+      alert("গুগল লগইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+    });
+});
+
+
+/* =========================
+   MENU TOGGLE
+========================= */
+const menu = document.querySelector(".menu");
+const dropdown = document.querySelector(".menu-dropdown");
+
+menu.addEventListener("click", (e) => {
+  e.stopPropagation();
+  dropdown.style.display =
+    dropdown.style.display === "block" ? "none" : "block";
+});
+
+document.addEventListener("click", () => {
+  dropdown.style.display = "none";
+});
+
+/* =========================
+   CHAT ELEMENTS
+========================= */
+const sendBtn = document.getElementById("sendBtn");
+const userInput = document.getElementById("userInput");
+const chatBox = document.getElementById("chatBox");
+const limitCount = document.getElementById("limitCount");
+
+/* =========================
+   DAILY LIMIT
+========================= */
+const today = new Date().toDateString();
+let usage = JSON.parse(localStorage.getItem("usage")) || {};
+if (!usage[today]) usage[today] = 0;
+limitCount.innerText = usage[today];
+
+function addMessage(text, type) {
+  const div = document.createElement("div");
+  div.className = type === "user" ? "user-msg" : "ai-msg";
+
+  if (type === "ai") {
+    div.innerHTML = text; // 👈 HTML allow
+  } else {
+    div.innerText = text;
+  }
+
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+/* =========================
+   AI CORE FUNCTION
+========================= */
+function askJosen(question) {
+  const text = question.toLowerCase().trim();
+
+  let bestIntent = null;
+  let maxScore = 0;
+
+  for (const intent of ALL_INTENTS) {
+    let score = 0;
+
+    for (const keyword of intent.keywords) {
+      const key = keyword.toLowerCase();
+
+      if (text.includes(key)) {
+        // longer keyword = higher score
+        score += key.length;
+      }
+    }
+
+    if (score > maxScore) {
+      maxScore = score;
+      bestIntent = intent;
+    }
+  }
+
+  if (!bestIntent) {
+    return "আমি এই প্রশ্নটা এখনও শিখিনি 🙂";
+  }
+
+  const replies = bestIntent.responses;
+  return replies[Math.floor(Math.random() * replies.length)];
+}
+
+/* =========================
+   SEND MESSAGE
+========================= */
+sendBtn.addEventListener("click", sendMessage);
+
+userInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+function sendMessage() {
+  if (usage[today] >= 12) {
+    addMessage("❌ আজকের daily limit শেষ। কাল আবার চেষ্টা করো।", "ai");
+    return;
+  }
+
+  const text = userInput.value.trim();
+  if (!text) return;
+
+  addMessage(text, "user");
+  userInput.value = "";
+
+  addMessage("Thinking...", "ai");
+
+  setTimeout(() => {
+    chatBox.lastChild.remove();
+
+    const answer = askJosen(text);
+    addMessage(answer, "ai");
+
+    usage[today]++;
+    localStorage.setItem("usage", JSON.stringify(usage));
+    limitCount.innerText = usage[today];
+  }, 500);
+}
+
+
+
