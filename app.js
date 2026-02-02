@@ -1,6 +1,3 @@
-
-
-
  /***********************
   JOSEN AI APP
 ************************/
@@ -28,22 +25,21 @@ window.addEventListener("load", () => {
     splashScreen.classList.add("hidden");
 
     const isLoggedIn = localStorage.getItem("loggedIn");
-
-    if (isLoggedIn === "true") {
-      appScreen.classList.remove("hidden");
-      addMessage("স্বাগতম! আবার আপনাকে দেখে ভালো লাগছে 😊", "ai");
-    } else {
-      loginScreen.classList.remove("hidden");
-    }
+if (isLoggedIn === "true") {
+  loginScreen.classList.add("hidden");
+  appScreen.classList.remove("hidden");
+  addMessage("স্বাগতম! আবার আপনাকে দেখে ভালো লাগছে 😊", "ai");
+}
+    
   }, 3000);
 });
 
 /* =========================
    LOCAL LOGIN (NO FIREBASE)
 ========================= */
-const loginBtn = document.getElementById("loginBtn");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
+const loginBtn = document.getElementById("emailLogin");
+const emailInput = document.getElementById("emailInput");
+const passwordInput = document.getElementById("passwordInput");
 
 loginBtn.addEventListener("click", () => {
   const email = emailInput.value.trim();
