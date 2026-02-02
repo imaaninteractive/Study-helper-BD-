@@ -14,14 +14,33 @@
   <h2>Study Helper BD</h2>  
   <p>Created by Imaan Interactive</p>  
   <p>Powered by ark-anaya</p>
-</div>  <!-- 🔐 Login Screen -->  <div id="loginScreen" class="screen hidden">  
-  <h2>Welcome 👋</h2>  
-  <p>Login to continue</p>    <button id="googleLogin" class="btn google">  
-    Continue with Google  
-  </button>    <button id="emailLogin" class="btn">  
-    Continue with Email  
-  </button>  
-</div>  <!-- 🌐 Main App -->  <div id="app" class="hidden">    <!-- 🔝 Top Bar -->    <header class="top-bar">  
+</div> <!-- 🔐 Login Screen -->
+<div id="loginScreen" class="screen hidden">
+  <h2>Welcome 👋</h2>
+  <p>Login to continue</p>
+
+  <div class="login-form">
+    <input
+      type="email"
+      id="emailInput"
+      placeholder="Enter your email"
+      autocomplete="email"
+    />
+
+    <input
+      type="password"
+      id="passwordInput"
+      placeholder="Enter your password"
+      autocomplete="current-password"
+    />
+
+    <button id="emailLogin" class="btn">
+      Login
+    </button>
+  </div>
+</div>
+  
+  <!-- 🌐 Main App -->  <div id="app" class="hidden">    <!-- 🔝 Top Bar -->    <header class="top-bar">  
     <h2>Study Helper BD</h2>  <div class="menu">  
   ⋮  
   <div class="menu-dropdown">  
