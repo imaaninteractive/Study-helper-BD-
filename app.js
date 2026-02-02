@@ -25,11 +25,15 @@ window.addEventListener("load", () => {
     splashScreen.classList.add("hidden");
 
     const isLoggedIn = localStorage.getItem("loggedIn");
-if (isLoggedIn === "true") {
-  appScreen.classList.remove("hidden");
-  addMessage("স্বাগতম! আবার আপনাকে দেখে ভালো লাগছে 😊", "ai");
-}
-    
+
+    if (isLoggedIn === "true") {
+      loginScreen.classList.add("hidden");
+      appScreen.classList.remove("hidden");
+      addMessage("স্বাগতম! আবার আপনাকে দেখে ভালো লাগছে 😊", "ai");
+    } else {
+      loginScreen.classList.remove("hidden"); 
+    }
+
   }, 3000);
 });
 
