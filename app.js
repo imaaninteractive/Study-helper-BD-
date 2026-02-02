@@ -26,7 +26,6 @@ window.addEventListener("load", () => {
 
     const isLoggedIn = localStorage.getItem("loggedIn");
 if (isLoggedIn === "true") {
-  loginScreen.classList.add("hidden");
   appScreen.classList.remove("hidden");
   addMessage("স্বাগতম! আবার আপনাকে দেখে ভালো লাগছে 😊", "ai");
 }
