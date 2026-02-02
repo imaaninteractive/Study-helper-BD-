@@ -76,7 +76,12 @@ loginBtn.addEventListener("click", () => {
   addMessage(`স্বাগতম <b>${email}</b>! 😊`, "ai");
 });
 
+const logoutBtn = document.getElementById("logoutBtn");
 
+logoutBtn.addEventListener("click", () => {
+  localStorage.removeItem("loggedIn");
+  location.reload();
+});
 /* =========================
    MENU TOGGLE
 ========================= */
