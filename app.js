@@ -1,5 +1,4 @@
-import { auth, provider } from "./firebase.js";
-import { signInWithPopup } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
 
 
  /***********************
@@ -27,32 +26,46 @@ const appScreen = document.getElementById("app");
 window.addEventListener("load", () => {
   setTimeout(() => {
     splashScreen.classList.add("hidden");
-    loginScreen.classList.remove("hidden");
+
+    const isLoggedIn = localStorage.getItem("loggedIn");
+
+    if (isLoggedIn === "true") {
+      appScreen.classList.remove("hidden");
+      addMessage("স্বাগতম! আবার আপনাকে দেখে ভালো লাগছে 😊", "ai");
+    } else {
+      loginScreen.classList.remove("hidden");
+    }
   }, 3000);
 });
 
 /* =========================
-   DEMO LOGIN
+   LOCAL LOGIN (NO FIREBASE)
 ========================= */
-const googleLoginBtn = document.getElementById("googleLogin");
+const loginBtn = document.getElementById("loginBtn");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
 
-googleLoginBtn.addEventListener("click", () => {
-  signInWithPopup(auth, provider)
-    .then((result) => {
-      console.log("ইউজার:", result.user.displayName);
+loginBtn.addEventListener("click", () => {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
 
-      loginScreen.classList.add("hidden");
-      appScreen.classList.remove("hidden");
+  if (!email || !password) {
+    alert("Email আর Password দিতে হবে");
+    return;
+  }
 
-      addMessage(
-        `স্বাগতম <b>${result.user.displayName}</b>! আমি আপনাকে কীভাবে সাহায্য করতে পারি?`,
-        "ai"
-      );
-    })
-    .catch((error) => {
-      console.error("লগইন এরর:", error.message);
-      alert("গুগল লগইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
-    });
+  // 🔐 Demo credential (চাও তো বদলাতে পারো)
+  if (email === "admin@test.com" && password === "123456") {
+    localStorage.setItem("loggedIn", "true");
+    localStorage.setItem("userEmail", email);
+
+    loginScreen.classList.add("hidden");
+    appScreen.classList.remove("hidden");
+
+    addMessage(`স্বাগতম <b>${email}</b>! 😊`, "ai");
+  } else {
+    alert("ভুল Email বা Password");
+  }
 });
 
 
