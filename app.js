@@ -48,23 +48,32 @@ loginBtn.addEventListener("click", () => {
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
 
+  // basic validation
   if (!email || !password) {
     alert("Email আর Password দিতে হবে");
     return;
   }
 
-  // 🔐 Demo credential (চাও তো বদলাতে পারো)
-  if (email === "admin@test.com" && password === "123456") {
-    localStorage.setItem("loggedIn", "true");
-    localStorage.setItem("userEmail", email);
-
-    loginScreen.classList.add("hidden");
-    appScreen.classList.remove("hidden");
-
-    addMessage(`স্বাগতম <b>${email}</b>! 😊`, "ai");
-  } else {
-    alert("ভুল Email বা Password");
+  // email format check
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    alert("Valid email দাও");
+    return;
   }
+
+  if (password.length < 6) {
+    alert("Password কমপক্ষে 6 অক্ষরের হতে হবে");
+    return;
+  }
+
+  
+  localStorage.setItem("loggedIn", "true");
+  localStorage.setItem("userEmail", email);
+
+  loginScreen.classList.add("hidden");
+  appScreen.classList.remove("hidden");
+
+  addMessage(`স্বাগতম <b>${email}</b>! 😊`, "ai");
 });
 
 
